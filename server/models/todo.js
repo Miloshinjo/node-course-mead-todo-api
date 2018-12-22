@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+// create Todo model for database
 const Todo = mongoose.model('Todo', {
   text: {
     type: String,
@@ -17,5 +18,6 @@ const Todo = mongoose.model('Todo', {
   }
 })
 
+// export model
 module.exports = { Todo }
 

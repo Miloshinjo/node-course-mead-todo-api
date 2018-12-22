@@ -12,10 +12,11 @@ app.use(bodyParser.json())
 
 // create a post route for todos
 app.post('/todos', (req, res) => {
+  // create a new todo
   const todo = new Todo({
     text: req.body.text
   })
-
+  // save todo to database
   todo.save().then((doc) => {
     res.send(doc)
   }, (err) => {
@@ -27,3 +28,5 @@ app.post('/todos', (req, res) => {
 app.listen(5000, () => {
   console.log('Started on port 5000')
 })
+
+module.exports = { app }

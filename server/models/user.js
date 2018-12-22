@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+// create User model for database
 const User = mongoose.model('User', {
   email: {
     type: String,
@@ -9,4 +10,5 @@ const User = mongoose.model('User', {
   }
 })
 
+// export model
 module.exports = { User }
