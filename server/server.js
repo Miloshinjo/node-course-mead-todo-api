@@ -7,6 +7,8 @@ const { Todo } = require('./models/todo')
 const { User } = require('./models/user')
 
 const app = express()
+// set up evironment port variable
+const port = process.env.PORT || 5000
 
 // configure middleware to use body-parser
 app.use(bodyParser.json())
@@ -48,8 +50,8 @@ app.get('/todos/:id', (req, res) => {
 })
 
 // listen on a port
-app.listen(5000, () => {
-  console.log('Started on port 5000')
+app.listen(port, () => {
+  console.log(`Started on port ${port}`)
 })
 
 module.exports = { app }
