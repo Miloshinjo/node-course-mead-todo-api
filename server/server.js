@@ -8,6 +8,7 @@ const { ObjectID } = require('mongodb')
 const { mongoose } = require('./db/mongoose')
 const { Todo } = require('./models/todo')
 const { User } = require('./models/user')
+const { authenticate } = require('./middleware/authenticate')
 
 const app = express()
 // set up evironment port variable
@@ -91,11 +92,14 @@ app.post('/users', (req, res) => {
   const user = new User(body)
 
   user.save()
-      .then(() => user.generateAuthToken())
-      .then(token => res.header('x-auth').send(user))
-      .catch(err => res.status(400).send(err))
+    .then(() => user.generateAuthToken())
+    .then(token => res.header('x-auth').send(user))
+    .catch(err => res.status(400).send(err))
 })
 
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user)
+})
 
 // listen on a port
 app.listen(port, () => {
