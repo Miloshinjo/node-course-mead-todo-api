@@ -222,7 +222,7 @@ describe('GET /users/me', () => {
       .expect(200)
       .expect((res) => {
         expect(res.body._id).toBe(users[0]._id.toHexString())
-        expect(res.body.email).toBe(users[0].email)
+        expect(res.body.username).toBe(users[0].username)
       })
       .end(done)
   })
@@ -240,22 +240,22 @@ describe('GET /users/me', () => {
 
 describe('POST /users', () => {
   it('should create a user', (done) => {
-    const email = 'example@example.com'
+    const username = 'miloshinjo123'
     const password = '123mnb!'
 
     request(app)
       .post('/users')
-      .send({ email, password })
+      .send({ username, password })
       .expect(200)
       .expect((res) => {
         expect(res.headers['x-auth']).toExist()
         expect(res.body._id).toExist()
-        expect(res.body.email).toBe(email)
+        expect(res.body.username).toBe(username)
       })
       .end((err) => {
         if (err) return done(err)
 
-        User.findOne({ email })
+        User.findOne({ username })
           .then(user => {
             expect(user).toExist()
             expect(user.password).toNotBe(password)
@@ -265,21 +265,21 @@ describe('POST /users', () => {
   })
 
   it('should return validation errors if request invalid', (done) => {
-    const email = 'invalid'
+    const username = 'invalid'
     const password = 'inv'
 
     request(app)
       .post('/users')
-      .send({ email, password })
+      .send({ username, password })
       .expect(400)
       .end(done)
   })
 
-  it('should not create user if email in use', (done) => {
+  it('should not create user if username in use', (done) => {
     request(app)
       .post('/users')
       .send({
-        email: users[0].email,
+        username: users[0].username,
         password: 'Password123!'
       })
       .expect(400)
@@ -292,7 +292,7 @@ describe('POST /users/login', () => {
     request(app)
       .post('/users/login')
       .send({
-        email: users[1].email,
+        username: users[1].username,
         password: users[1].password
       })
       .expect(200)
@@ -317,7 +317,7 @@ describe('POST /users/login', () => {
     request(app)
     .post('/users/login')
     .send({
-      email: users[1].email,
+      username: users[1].username,
       password: 'wrond password'
     })
     .expect(400)

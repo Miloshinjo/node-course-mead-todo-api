@@ -1,21 +1,17 @@
 const mongoose = require('mongoose')
-const { isEmail } = require('validator')
+const uniqueValidator = require('mongoose-unique-validator')
 const jwt = require('jsonwebtoken')
 const _ = require('lodash')
 const bcrypt = require('bcryptjs')
 
 // create User schema and model for database
 const UserSchema = new mongoose.Schema({
-  email: {
+  username: {
     type: String,
     required: true,
-    trim: true,
-    minlength: 1,
     unique: true,
-    validate: {
-      validator: isEmail,
-      message: '{VALUE} is not a valid email'
-    }
+    trim: true,
+    minlength: 1
   },
   password: {
     type: String,
@@ -34,12 +30,14 @@ const UserSchema = new mongoose.Schema({
   }]
 })
 
+// UserSchema.plugin(uniqueValidator)
+
 // override a toJSON method so we can pick properties only we want to show
 UserSchema.methods.toJSON = function () {
   const user = this
   const userObject = user.toObject()
 
-  return _.pick(userObject, ['_id', 'email'])
+  return _.pick(userObject, ['_id', 'username'])
 }
 
 // generate JWT
@@ -87,11 +85,11 @@ UserSchema.statics.findByToken = function (token) {
   })
 }
 
-UserSchema.statics.findByCredentials = function (email, password) {
+UserSchema.statics.findByCredentials = function (username, password) {
   const User = this;
 
-  // find the user by email
-  return User.findOne({ email })
+  // find the user by username
+  return User.findOne({ username })
     .then(user => {
       if (!user) return Promise.reject()
 
