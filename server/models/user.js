@@ -58,6 +58,17 @@ UserSchema.methods.generateAuthToken = function () {
   })
 }
 
+// remove JWT token
+UserSchema.methods.removeToken = function (token) {
+  const user = this
+  // $pull lets u remove a prop from mongodb
+  return user.update({
+    $pull: {
+      tokens: { token }
+    }
+  })
+}
+
 // statics becomes a model method, not an instace method
 UserSchema.statics.findByToken = function (token) {
   const User = this
@@ -114,3 +125,5 @@ const User = mongoose.model('User', UserSchema)
 
 // export model
 module.exports = { User }
+
+
