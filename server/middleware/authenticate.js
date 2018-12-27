@@ -5,9 +5,7 @@ const authenticate = (req, res, next) => {
 
   User.findByToken(token)
     .then(user => {
-      if (!user) {
-        return Promise.reject() // reject promise if token is not valid, send user to 401
-      }
+      if (!user) return Promise.reject() // reject promise if token is not valid, send user to 401
 
       req.user = user
       req.token = token
