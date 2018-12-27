@@ -54,7 +54,6 @@ UserSchema.methods.generateAuthToken = function () {
   user.tokens = user.tokens.concat([{ access, token }])
 
   return user.save().then(() => {
-    console.log(token)
     return token
   })
 }
@@ -77,6 +76,22 @@ UserSchema.statics.findByToken = function (token) {
   })
 }
 
+UserSchema.statics.findByCredentials = function (email, password) {
+  const User = this;
+
+  // find the user by email
+  return User.findOne({ email })
+    .then(user => {
+      if (!user) return Promise.reject()
+
+      return new Promise((resolve, reject) => {
+        // Use bcrypt.compare to compare password and user.password
+        bcrypt.compare(password, user.password, (err, res) => res ? resolve(user) : reject())
+      })
+    })
+}
+
+// Run before we save something to the database
 UserSchema.pre('save', function (next) {
   const user = this
 
@@ -89,9 +104,6 @@ UserSchema.pre('save', function (next) {
         next()
       })
     })
-    // set hashed password
-
-    // call next()
   } else {
     // end the middleware without doing anything
     next()
